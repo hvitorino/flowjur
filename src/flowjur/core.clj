@@ -52,9 +52,16 @@
                                  (handle-error))))]
         (recur next-context (first next-steps) (rest next-steps))))))
 
-(defn flow->step [name {:keys [steps handle-error]}]
+(defn flow->step [name {:keys [steps handle-error] :as target-flow}]
+  (throw-if-invalid-flow target-flow)
   (step {:name    name
          :handler (fn [ctx]
                     (flow {:context      ctx
                            :steps        steps
                            :handle-error handle-error}))}))
+
+(defn subflow [ctx {:keys [context steps handle-error] :as target-flow}]
+  (throw-if-invalid-flow target-flow)
+  (flow {:context      (merge ctx context)
+         :steps        steps
+         :handle-error handle-error}))

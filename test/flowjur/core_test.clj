@@ -52,7 +52,7 @@
 
   (testing "Execution"
 
-    (testing "Exapected behaviour"
+    (testing "Expected behaviour"
       (testing "Simple flow"
         (let [step1 (step {:name ::step1 :handler (fn [ctx] (assoc ctx :executed true))})
               flow1 {:context {}
@@ -77,6 +77,21 @@
               flow2 {:context {}
                      :steps   [(flow->step ::subflow flow1)
                                step2]}
+              output (flow flow2)]
+          (is true (:executed-1 output))
+          (is true (:executed-2 output))))
+
+      (testing "Sub flow"
+        (let [step1 (step {:name ::step1 :handler (fn [ctx] (assoc ctx :executed-1 true))})
+              flow1 {:context {}
+                     :steps   [step1]}
+
+              step2 (step {:name ::step2 :handler (fn [ctx]
+                                                    (-> (subflow ctx flow1)
+                                                        (assoc :executed-2 true)))})
+
+              flow2 {:context {}
+                     :steps   [step2]}
               output (flow flow2)]
           (is true (:executed-1 output))
           (is true (:executed-2 output)))))
