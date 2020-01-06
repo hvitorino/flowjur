@@ -1,10 +1,37 @@
 # flowjur
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library designed to run clojure functions as part of a workflow. Each step
+should have a name and a handler wich is a function of arity 1 designed to receive a
+context hashmap used to read/store shared data throught all steps of the workflow.
 
 ## Usage
 
-FIXME
+### Simple flow
+
+```
+(def right-foot 
+  (step {:name    ::right-foot
+         :handler (fn [ctx]
+                    (assoc ctx :right-foot-data "right foot step"))))
+
+(def left-foot 
+  (step {:name    ::lef-foot
+         :handler (fn [ctx]
+                    (assoc ctx :left-foot-data "left foot step"))))
+
+(defn handle-error [ctx]
+  (println "Ouch!")
+  (println (-> ctx :error :exception)))
+
+(def run-forrest {:context       {}
+                  :steps         [right-foot 
+                                  left-foot 
+                                  right-foot 
+                                  left-foot]
+                  :error-handler handle-error)
+
+(flow run-forrest)
+```
 
 ## License
 

@@ -60,7 +60,7 @@
                      :steps   [step1]}]
           (is (thrown-with-msg? ExceptionInfo #"Expected error" (flow flow1)))))
 
-      (testing "Error should be added to context"
+      (testing "Context contains error"
         (let [ex (ex-info "Expected error" {:ctx nil})
               step1 (step {:name          ::step1
                            :handler       (fn [_] (throw ex))
