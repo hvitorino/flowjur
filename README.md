@@ -40,6 +40,45 @@ happened during execution.
 (flow run-forrest)
 ```
 
+### Sub flow
+
+```
+(def jump
+  (step {:name    ::jump
+         :handler (fn [ctx]
+                    (assoc ctx :jump-data "jump"))))
+
+(def right-foot 
+  (step {:name    ::right-foot
+         :handler (fn [ctx]
+                    (-> (if (obstacle? ctx)
+                          jump
+                          ctx) 
+                        (assoc ctx :right-foot-data "right foot step")))))
+
+(def left-foot 
+  (step {:name    ::lef-foot
+         :handler (fn [ctx]
+                    (-> (if (obstacle? ctx)
+                          jump
+                          ctx) 
+                        (assoc ctx :left-foot-data "left foot step")))))
+
+(defn handle-error [ctx]
+  (println "Ouch!")
+  (println (-> ctx :error :exception))
+  ctx)
+
+(def run-forrest {:context       {}
+                  :steps         [right-foot 
+                                  left-foot 
+                                  right-foot 
+                                  left-foot]
+                  :error-handler handle-error)
+
+(flow run-forrest)
+```
+
 ## License
 
 Copyright © 2020 FIXME
