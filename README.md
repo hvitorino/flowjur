@@ -1,8 +1,14 @@
 # flowjur
 
-A Clojure library designed to run clojure functions as part of a workflow. Each step
-should have a name and a handler wich is a function of arity 1 designed to receive a
-context hashmap used to read/store shared data throught all steps of the workflow.
+A Clojure library designed to run clojure functions as part of a workflow. 
+
+Each step should have a name and a handler wich is a function of arity 1 designed
+to receive a context hashmap used to read/store shared data throught all steps of 
+the workflow.
+
+All functions should take a context and forward the context to keep the state flowing
+throught the execution, including the error handler, so flow's output shows what's
+happened during execution.  
 
 ## Usage
 
@@ -21,7 +27,8 @@ context hashmap used to read/store shared data throught all steps of the workflo
 
 (defn handle-error [ctx]
   (println "Ouch!")
-  (println (-> ctx :error :exception)))
+  (println (-> ctx :error :exception))
+  ctx)
 
 (def run-forrest {:context       {}
                   :steps         [right-foot 
