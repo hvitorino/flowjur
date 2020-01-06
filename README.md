@@ -52,7 +52,7 @@ happened during execution.
   (step {:name    ::right-foot
          :handler (fn [ctx]
                     (-> (if (obstacle? ctx)
-                          jump
+                          (jump ctx)
                           ctx) 
                         (assoc ctx :right-foot-data "right foot step")))))
 
@@ -60,7 +60,7 @@ happened during execution.
   (step {:name    ::lef-foot
          :handler (fn [ctx]
                     (-> (if (obstacle? ctx)
-                          jump
+                          (jump ctx)
                           ctx) 
                         (assoc ctx :left-foot-data "left foot step")))))
 
