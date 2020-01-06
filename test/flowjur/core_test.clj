@@ -94,6 +94,26 @@
                      :steps   [step2]}
               output (flow flow2)]
           (is true (:executed-1 output))
+          (is true (:executed-2 output))))
+
+      (testing "README Simple flow"
+        (let [right-foot (step {:name ::right-foot :handler (fn [ctx] (assoc ctx :right-foot-executed true))})
+              left-foot (step {:name ::left-foot :handler (fn [ctx] (assoc ctx :left-foot-executed true))})
+              run-forrest {:context {}
+                           :steps   [right-foot left-foot]}
+              output (flow run-forrest)]
+          (is true (:executed-1 output))
+          (is true (:executed-2 output))))
+
+      (testing "README Sub flow"
+        (let [right-foot (step {:name ::right-foot :handler (fn [ctx] (assoc ctx :right-foot-executed true))})
+              flow1 {:context {}
+                     :steps   [right-foot]}
+              left-foot (step {:name ::left-foot :handler (fn [ctx] (assoc (subflow ctx flow1) :left-foot-executed true))})
+              run-forrest {:context {}
+                           :steps   [left-foot]}
+              output (flow run-forrest)]
+          (is true (:executed-1 output))
           (is true (:executed-2 output)))))
 
     (testing "Error handling"
