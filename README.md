@@ -30,12 +30,9 @@ happened during execution.
   (println (-> ctx :error :exception))
   ctx)
 
-(def run-forrest {:context       {}
-                  :steps         [right-foot 
-                                  left-foot 
-                                  right-foot 
-                                  left-foot]
-                  :error-handler handle-error)
+(def run-forrest {:context      {}
+                  :steps        [right-foot left-foot]
+                  :handle-error handle-error)
 
 (flow run-forrest)
 ```
@@ -48,21 +45,19 @@ happened during execution.
          :handler (fn [ctx]
                     (assoc ctx :jump-data "jump"))))
 
+(def jump-forrest {:context {}
+                   :steps   [jump]})
+
 (def right-foot 
   (step {:name    ::right-foot
          :handler (fn [ctx]
-                    (-> (if (obstacle? ctx)
-                          (jump ctx)
-                          ctx) 
-                        (assoc ctx :right-foot-data "right foot step")))))
+                    (assoc ctx :right-foot-data "right foot step")))))
 
 (def left-foot 
   (step {:name    ::lef-foot
          :handler (fn [ctx]
-                    (-> (if (obstacle? ctx)
-                          (jump ctx)
-                          ctx) 
-                        (assoc ctx :left-foot-data "left foot step")))))
+                    (-> (subflow ctx jump) 
+                        (assoc :left-foot-data "left foot step")))))
 
 (defn handle-error [ctx]
   (println "Ouch!")
@@ -71,9 +66,7 @@ happened during execution.
 
 (def run-forrest {:context       {}
                   :steps         [right-foot 
-                                  left-foot 
-                                  right-foot 
-                                  left-foot]
+                                  left-foot
                   :error-handler handle-error)
 
 (flow run-forrest)
