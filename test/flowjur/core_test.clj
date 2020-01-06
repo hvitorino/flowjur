@@ -52,6 +52,35 @@
 
   (testing "Execution"
 
+    (testing "Exapected behaviour"
+      (testing "Simple flow"
+        (let [step1 (step {:name ::step1 :handler (fn [ctx] (assoc ctx :executed true))})
+              flow1 {:context {}
+                     :steps   [step1]}
+              output (flow flow1)]
+          (is true (:executed output))))
+
+      (testing "Two steps flow"
+        (let [step1 (step {:name ::step1 :handler (fn [ctx] (assoc ctx :executed-1 true))})
+              step2 (step {:name ::step2 :handler (fn [ctx] (assoc ctx :executed-2 true))})
+              flow1 {:context {}
+                     :steps   [step1 step2]}
+              output (flow flow1)]
+          (is true (:executed-1 output))
+          (is true (:executed-2 output))))
+
+      (testing "Flow -> Step transformation"
+        (let [step1 (step {:name ::step1 :handler (fn [ctx] (assoc ctx :executed-1 true))})
+              step2 (step {:name ::step2 :handler (fn [ctx] (assoc ctx :executed-2 true))})
+              flow1 {:context {}
+                     :steps   [step1]}
+              flow2 {:context {}
+                     :steps   [(flow->step ::subflow flow1)
+                               step2]}
+              output (flow flow2)]
+          (is true (:executed-1 output))
+          (is true (:executed-2 output)))))
+
     (testing "Error handling"
 
       (testing "Default error handler propagates exception"

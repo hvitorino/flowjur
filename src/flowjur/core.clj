@@ -51,3 +51,10 @@
                              (-> (assoc curr-context :error {:step name :exception e})
                                  (handle-error))))]
         (recur next-context (first next-steps) (rest next-steps))))))
+
+(defn flow->step [name {:keys [steps handle-error]}]
+  (step {:name    name
+         :handler (fn [ctx]
+                    (flow {:context      ctx
+                           :steps        steps
+                           :handle-error handle-error}))}))
