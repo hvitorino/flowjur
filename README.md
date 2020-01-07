@@ -1,14 +1,13 @@
 # flowjur
 
-A Clojure library designed to run clojure functions as part of a workflow. 
+Flowjur is a Clojure library designed to run stateful functions as part of a workflow.
 
-Each step should have a name and a handler wich is a function of arity 1 designed
-to receive a context hashmap used to read/store shared data throught all steps of 
-the workflow.
+Each step has a name and a handler, which is a function of arity one designed to receive 
+a context hashmap used to read/store shared data through all steps of the workflow.
 
-All functions should take a context and forward the context to keep the state flowing
-throught the execution, including the error handler, so flow's output shows what's
-happened during execution.  
+All functions must take a context and return it to keep the state flowing through the execution,
+including the error handler, so the flow output will have the necessary information in case of an
+error happening in one of the steps.  
 
 ## Usage
 
@@ -56,7 +55,7 @@ happened during execution.
 (def left-foot 
   (step {:name    ::lef-foot
          :handler (fn [ctx]
-                    (-> (subflow ctx jump) 
+                    (-> (subflow ctx jump-forrest) 
                         (assoc :left-foot-data "left foot step")))))
 
 (defn handle-error [ctx]
