@@ -31,7 +31,7 @@ error happening in one of the steps.
 
 (def run-forrest {:context      {}
                   :steps        [right-foot left-foot]
-                  :handle-error handle-error)
+                  :handle-error handle-error})
 
 (flow run-forrest)
 ```
